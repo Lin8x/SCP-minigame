@@ -1,0 +1,241 @@
+
+on join:
+  message "-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-"
+  message "&fWelcome to &c&lSCP Secret Labratory &7(Minecraft Edition)&f!"
+  message "-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-"
+
+#Counter for D-Class = DNum
+#Counter for Scientist = SciNum
+
+#Counter for Guard = GNum
+#Counter for Major Gaurd = MGNum
+#Counter for MTF = MTFNum
+#Counter for MTF Commander = MTFCNum
+
+#Counter for Chaos = ChaosNum
+#Counter for Chaos = ChaosCNum
+
+#Counter for SCP = SCPNum
+#Array for SCP’s already spawned = SCPArray
+
+#Counter for Players = PlayNum
+#Counter for Spectators = SpectNum
+
+#Time = current time of minecraft
+#CurrentTime = current time of minecraft - 10 minutes
+
+{game} = false
+
+{DNum} = 0
+{SciNum} = 0
+{GNum} = 0
+{MGNum} = 0
+{MTFNum} = 0
+{MTFCNum} = 0
+{ChaosNum} = 0
+{ChaosCNum} = 0
+
+{SCPNum} = 0
+{SCPList} = ""
+
+{SpectNum} = 0
+{PlayNum} = 0
+{Time} = time
+{CurrentTime} = time - 10 minutes
+{gameplayer.%player%} = false
+{queue} = 0
+
+command /startscp:
+  trigger:
+    # If the player already is in the game
+    if {gameplayer.%player%} is True:
+        message "&7[&c&lSCPSL&7]&f You already joined game %{gameplayer.%player%}%"
+        stop
+    #If the game is already full
+    #say so and deny.
+    else if {PlayNum} is greater than 20:
+        message "&7[&c&lSCPSL&7]&f Please wait! This game is full!"
+        stop
+    #If the game is already in-progress,
+    #say so and give the spectator role till joining.
+    else if {game} is true:
+        message "&7[&c&lSCPSL&7]&f The game is in progress... Joining now."
+        gamestart(join)
+        set PlayNum to PlayNum + 1
+        stop
+
+    #Else (if the player can join):
+        #Teleport the player to the world
+    #else
+        #Add to the player counter
+        #If there are at least 2 people to the list of players waiting:
+            #createworld()
+            #gamestart(new)
+    else:
+        set {gameplayer.%player%} to true
+        message "&7[&c&lSCPSL&7]&f You joined the game!."
+        set {queue} to {queue} + 1
+        set PlayNum to PlayNum + 1
+        if queue < 2:
+          message "&7[&c&lSCPSL&7]&f Waiting for more people to start! &b%{queue}% &f/ &b2"
+        while queue < 2:
+          stop
+        if queue > 1:
+          message "&7[&c&lSCPSL&7]&f Enough people have joined! Starting new game..."
+          gamestart(new)
+          stop
+
+on death:
+  getClass(spectator, none)
+
+command /getClass <text> <text>:
+  getClass(arg)
+
+function getClass(Class: text, Role: text):
+
+
+    #If the Class is D-Boi
+        #Give D-Class Message
+        #Give player D-Class Kit
+        #Spawn player D-Class Cells of Light Containment
+        #Stop
+    if Class is "D-Boi"
+
+    If the Class is Scientist
+        Give Scientist Message
+        Spawn him in with the Scientist Kit
+        Spawn him in the Office Room of Light Containment
+        Stop
+
+    If the Class is Guard
+
+        If the type is Guard:
+            Give Guard Message
+            Give player Guard Kit
+            Spawn player in Guard Management room of Entrance Zone
+            stop
+
+        If the Role is Major:
+            Give Major Guard Message:
+            Give player Major Guard Kit
+            Spawn player in Guard Management room of Entrance Zone
+            stop
+
+    If the class is SCP:
+
+        If the type is 106:
+            Give SCP-106 Message
+            Give player 106 kit
+            Spawn player in 106 Room
+            stop
+
+
+    If the Class is MTF:
+
+        If the type is Cadet:
+            Give Cadet Message
+            Give player MTF Cadet kit
+            Spawn player in MTF Spawn
+            stop
+
+
+If the type is Lieutenant:
+    Give commander message
+        Give player MTF Commander kit
+        Spawn player in MTF Spawn
+        stop
+
+    If the type is Commander:
+            Give commander message
+            Give player MTF Commander kit
+            Spawn player in MTF Spawn
+            stop
+
+    If the Class is Chaos:
+
+        If the type is Cadet:
+            Give Cadet Message
+            Give player Chaos Cadet kit
+            Spawn player in Chaos Spawn
+            stop
+
+        If the type is Commander:
+            Give commander message
+            Give player Chaos Commander kit
+            Spawn player in Chaos Spawn
+            Stop
+
+    If the Class is Spectator:
+
+        Clear Inventory
+        set %{%player%}% gamemode spectator
+        set SpectNum to SpectNum + 1
+        gamestart(join)
+
+
+gamestart(type):
+If Type is "new":
+
+If DNum <= 0
+    getClass(Dboi, nothing)
+    DNum++
+    PlayNum++
+If DNum == 1
+    Pick random number = 1-3
+    #The reason it is 1-3 and not 1-4 is because SCP-079 can only be
+# spawned if there is more than 1 SCP
+    getClass(SCP, random number)
+    SCPNum++
+    Add random number to SCPArray
+    PlayNum++
+Else:
+    if(GNum < 4 or SciNum < 3):
+        randoNum = Pick number 0 - 100
+        If randoNum < 35:
+getClass(D-Class, None)
+If randoNum < 50 && randoNum >= 35:
+getClass(Scientist, None)
+If randoNum >= 50 && randoNum <70 && SCPNum < 4:
+        Pick random number = 1-4
+        while( random number is in SCP Array):
+        Random number = 1-4
+getClass(SCP, random number)
+Else:
+getClass(D-Class, None)
+If Type is “join”:
+getClass(Spectator, None)
+    SpectNum++
+    if(SpectNum == 1):
+    Timer = Current Server Time
+until(Current Time == Timer + 2 minute)
+randoNum2 = Pick random number 0 - 100:
+If MTFNum == 0:
+if(randoNum2 = Pick random number 0 - 100:
+if(randoNum2 <= 10 && ChaosCNum < 1):
+    getClass(Chaos, Major)
+else if(randoNum <= 10 && ChaosCNum > 0):
+getClass(Chaos, Cadet)
+Else:
+    if(MTFCNum < 1):
+    getClass(MTF, Commander)
+    Else:
+    randoNum3 = Pick random number 0 - 100:
+    if(randoNum3 > 30):
+        getClass(MTF, Cadet)
+        Else:
+            getClass(MTF, Leuitenant)
+            If MTFNum > 0:
+if(randoNum2 = Pick random number 0 - 100:
+if(randoNum2 <= 35 && ChaosCNum < 1):
+    getClass(Chaos, Major)
+else if(randoNum <= 35 && ChaosCNum > 0):
+getClass(Chaos, Cadet)
+Else:
+    if(MTFCNum < 1):
+    getClass(MTF, Commander)
+    Else:
+    randoNum3 = Pick random number 0 - 100:
+    if(randoNum3 > 30):
+        getClass(MTF, Cadet)
+        Else:
+            getClass(MTF, Leuitenant)
